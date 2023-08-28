@@ -17,7 +17,6 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         global-json-file: 'global.json'
-        source-url: https://nuget.pkg.github.com/dorucioclea/index.json
 
     - name: Restore dependencies
       run: dotnet restore
