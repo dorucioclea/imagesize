@@ -43,8 +43,8 @@ public static class ImageSize
         }
 
         // Check for TIFF magic numbers
-        if (header.Take(2).SequenceEqual(new byte[] {0x49, 0x49}) ||
-            header.Take(2).SequenceEqual(new byte[] {0x4D, 0x4D})) // "II" or "MM"
+        if (header.Take(2).SequenceEqual("II"u8.ToArray()) ||
+            header.Take(2).SequenceEqual("MM"u8.ToArray())) // "II" or "MM"
         {
             binaryReader.BaseStream.Seek(0, SeekOrigin.Begin);
             return GetTiffSize(binaryReader);
@@ -97,7 +97,6 @@ public static class ImageSize
        {
            var tag = isLittleEndian ? reader.ReadUInt16() : reader.ReadUInt16BigEndian();
            reader.BaseStream.Seek(2, SeekOrigin.Current); // Skip the type, we assume short/int for width/height
-           var numValues = isLittleEndian ? reader.ReadUInt32() : reader.ReadUInt32BigEndian();
            var valueOrOffset = isLittleEndian ? reader.ReadUInt32() : reader.ReadUInt32BigEndian();
 
            if (tag == 256) // ImageWidth tag
@@ -127,7 +126,7 @@ public static class ImageSize
 
             byte segmentType = binaryReader.ReadByte();
 
-            if (segmentType >= 0xC0 && segmentType <= 0xCF && segmentType != 0xC4 && segmentType != 0xC8 &&
+            if (segmentType is >= 0xC0 and <= 0xCF && segmentType != 0xC4 && segmentType != 0xC8 &&
                 segmentType != 0xCC)
             {
                 binaryReader.ReadByte(); // Skip length high byte
