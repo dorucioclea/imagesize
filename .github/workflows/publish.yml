@@ -39,7 +39,7 @@ jobs:
       working-directory: ImageSize
 
     - name: Push to NuGet
-      run: dotnet nuget push ImageSize/bin/Release/*.nupkg -k ${GITHUB_TOKEN} -s https://nuget.pkg.github.com/dorucioclea/index.json --skip-duplicate --no-symbols true
+      run: dotnet nuget push ImageSize/ImageSize/bin/Release/*.nupkg -k ${GITHUB_TOKEN} -s https://nuget.pkg.github.com/dorucioclea/index.json --skip-duplicate --no-symbols true
       working-directory: ImageSize
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
