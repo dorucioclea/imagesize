@@ -1,8 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿namespace ImageSize;
 
-namespace ImageSize;
-
-[SuppressMessage("ReSharper", "UseUtf8StringLiteral")]
 public static class ImageSize
 {
     public static (int width, int height)? GetImageSize(Stream imageStream)
@@ -100,6 +97,7 @@ public static class ImageSize
        {
            var tag = isLittleEndian ? reader.ReadUInt16() : reader.ReadUInt16BigEndian();
            reader.BaseStream.Seek(2, SeekOrigin.Current); // Skip the type, we assume short/int for width/height
+           var numValues = isLittleEndian ? reader.ReadUInt32() : reader.ReadUInt32BigEndian();
            var valueOrOffset = isLittleEndian ? reader.ReadUInt32() : reader.ReadUInt32BigEndian();
 
            if (tag == 256) // ImageWidth tag
