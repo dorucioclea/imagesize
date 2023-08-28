@@ -127,7 +127,7 @@ public static class ImageSize
 
             byte segmentType = binaryReader.ReadByte();
 
-            if (segmentType is >= 0xC0 and <= 0xCF && segmentType != 0xC4 && segmentType != 0xC8 &&
+            if (segmentType >= 0xC0 && segmentType <= 0xCF && segmentType != 0xC4 && segmentType != 0xC8 &&
                 segmentType != 0xCC)
             {
                 binaryReader.ReadByte(); // Skip length high byte
