@@ -2,7 +2,6 @@
 
 namespace ImageSize;
 
-[SuppressMessage("ReSharper", "UseUtf8StringLiteral")]
 [SuppressMessage("ReSharper", "InvertIf")]
 public static class ImageSize
 {
@@ -47,8 +46,8 @@ public static class ImageSize
         }
 
         // Check for TIFF magic numbers
-        if (header.Take(2).SequenceEqual(new byte[] {0x49, 0x49}) ||
-            header.Take(2).SequenceEqual(new byte[] {0x4D, 0x4D})) // "II" or "MM"
+        if (header.Take(2).SequenceEqual("II"u8.ToArray()) ||
+            header.Take(2).SequenceEqual("MM"u8.ToArray())) // "II" or "MM"
         {
             binaryReader.BaseStream.Seek(0, SeekOrigin.Begin);
             return GetTiffSize(binaryReader);
