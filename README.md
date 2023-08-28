@@ -46,9 +46,23 @@ else
 
 ## Contributing
 Fork the repository.
-Create your feature branch (git checkout -b feature/YourFeatureName).
-Commit your changes (git commit -am 'Add some feature').
-Push to the branch (git push origin feature/YourFeatureName).
+Create your feature branch.
+
+```bash
+git checkout -b feature/YourFeatureName
+```
+
+Commit your changes.
+
+```bash
+git commit -am 'Add some feature'
+```
+
+Push to the branch.
+
+```bash
+git push origin feature/YourFeatureName
+```
 
 Open a pull request.
 
