@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace ImageSize;
+﻿namespace ImageSize;
 
 public static class ImageSize
 {
