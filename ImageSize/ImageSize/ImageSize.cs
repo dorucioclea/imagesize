@@ -97,7 +97,7 @@ public static class ImageSize
 
        int width = 0, height = 0;
 
-       for (int i = 0; i < entryCount; i++)
+       for (var i = 0; i < entryCount; i++)
        {
            var tag = isLittleEndian ? reader.ReadUInt16() : reader.ReadUInt16BigEndian();
            reader.BaseStream.Seek(2, SeekOrigin.Current); // Skip the type, we assume short/int for width/height
@@ -127,12 +127,12 @@ public static class ImageSize
     {
         while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
         {
-            byte marker = binaryReader.ReadByte();
+            var marker = binaryReader.ReadByte();
 
             if (marker != 0xFF)
                 continue;
 
-            byte segmentType = binaryReader.ReadByte();
+            var segmentType = binaryReader.ReadByte();
 
             if (segmentType is >= 0xC0 and <= 0xCF && segmentType != 0xC4 && segmentType != 0xC8 &&
                 segmentType != 0xCC)
