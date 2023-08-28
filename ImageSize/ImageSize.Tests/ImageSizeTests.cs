@@ -57,7 +57,7 @@ public class ImageSizeTests
     [Fact]
     public void TestTIFFSize()
     {
-        var path = Path.Combine(Directory.GetCurrentDirectory(), "200x300.tif");
+        var path = Path.Combine(Directory.GetCurrentDirectory(), "Free_Test_Data_1.1MB_TIFF.tif");
         using var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
         var size = ImageSize.GetImageSize(fileStream);
         

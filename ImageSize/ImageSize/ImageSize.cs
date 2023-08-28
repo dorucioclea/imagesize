@@ -1,4 +1,6 @@
-﻿namespace ImageSize;
+﻿using System.Text;
+
+namespace ImageSize;
 
 public static class ImageSize
 {
@@ -45,80 +47,82 @@ public static class ImageSize
         else if (header.Take(2).SequenceEqual(new byte[] {0x49, 0x49}) ||
                  header.Take(2).SequenceEqual(new byte[] {0x4D, 0x4D})) // "II" or "MM"
         {
-            bool isLittleEndian = header[0] == 0x49;
-            binaryReader.BaseStream.Seek(4, SeekOrigin.Current);
-            int offset = isLittleEndian ? binaryReader.ReadInt32LittleEndian() : binaryReader.ReadInt32BigEndian();
-            binaryReader.BaseStream.Seek(offset + 2, SeekOrigin.Begin);
-            int width = isLittleEndian ? binaryReader.ReadInt16LittleEndian() : binaryReader.ReadInt16BigEndian();
-            int height = isLittleEndian ? binaryReader.ReadInt16LittleEndian() : binaryReader.ReadInt16BigEndian();
-            return (width, height);
+            // bool isLittleEndian = header[0] == 0x49;
+            // binaryReader.BaseStream.Seek(4, SeekOrigin.Current);
+            // int offset = isLittleEndian ? binaryReader.ReadInt32LittleEndian() : binaryReader.ReadInt32BigEndian();
+            // binaryReader.BaseStream.Seek(offset + 2, SeekOrigin.Begin);
+            // int width = isLittleEndian ? binaryReader.ReadInt16LittleEndian() : binaryReader.ReadInt16BigEndian();
+            // int height = isLittleEndian ? binaryReader.ReadInt16LittleEndian() : binaryReader.ReadInt16BigEndian();
+            // return (width, height);
+
+            return GetTiffSize(binaryReader);
         }
 
         return null;
     }
 
-    private static (int width, int height)? GetTiffSize(BinaryReader reader)
-    {
-        // Read byte order marks
-        var byteOrder = reader.ReadUInt16();
+   private static (int width, int height)? GetTiffSize(BinaryReader reader)
+   {
+       // Read byte order marks
+       var byteOrderBytes = reader.ReadBytes(2);
 
-        bool isLittleEndian;
-        if (byteOrder == 0x4949) // II for Intel order (Little-Endian)
-        {
-            isLittleEndian = true;
-        }
-        else if (byteOrder == 0x4D4D) // MM for Motorola order (Big-Endian)
-        {
-            isLittleEndian = false;
-        }
-        else
-        {
-            return null; // Not a valid TIFF file
-        }
+       bool isLittleEndian;
+       if (byteOrderBytes[0] == 0x49 && byteOrderBytes[1] == 0x49) // II for Intel order (Little-Endian)
+       {
+           isLittleEndian = true;
+       }
+       else if (byteOrderBytes[0] == 0x4D && byteOrderBytes[1] == 0x4D) // MM for Motorola order (Big-Endian)
+       {
+           isLittleEndian = false;
+       }
+       else
+       {
+           return null; // Not a valid TIFF file
+       }
 
-        // Read the TIFF magic number (should be 42)
-        var magicNumber = isLittleEndian ? reader.ReadUInt16() : reader.ReadUInt16BigEndian();
-        if (magicNumber != 42)
-        {
-            return null; // Not a valid TIFF file
-        }
+       // Read the TIFF magic number (should be 42)
+       var magicNumber = isLittleEndian ? reader.ReadUInt16() : reader.ReadUInt16BigEndian();
+       if (magicNumber != 42)
+       {
+           return null; // Not a valid TIFF file
+       }
 
-        // Read the offset to the first IFD
-        var ifdOffset = isLittleEndian ? reader.ReadUInt32() : reader.ReadUInt32BigEndian();
+       // Read the offset to the first IFD
+       var ifdOffset = isLittleEndian ? reader.ReadUInt32() : reader.ReadUInt32BigEndian();
 
-        reader.BaseStream.Seek(ifdOffset, SeekOrigin.Begin);
+       if (ifdOffset > reader.BaseStream.Length - 2)
+       {
+           return null; // Not a valid IFD offset
+       }
 
-        var entryCount = isLittleEndian ? reader.ReadUInt16() : reader.ReadUInt16BigEndian();
+       reader.BaseStream.Seek(ifdOffset, SeekOrigin.Begin);
 
-        int width = 0, height = 0;
+       var entryCount = isLittleEndian ? reader.ReadUInt16() : reader.ReadUInt16BigEndian();
 
-        for (int i = 0; i < entryCount; i++)
-        {
-            var tag = isLittleEndian ? reader.ReadUInt16() : reader.ReadUInt16BigEndian();
-            reader.BaseStream.Seek(2, SeekOrigin.Current); // Skip the type, we assume short/int for width/height
-            var numValues = isLittleEndian ? reader.ReadUInt32() : reader.ReadUInt32BigEndian();
+       int width = 0, height = 0;
 
-            if (tag == 256) // ImageWidth tag
-            {
-                width = numValues <= ushort.MaxValue
-                    ? isLittleEndian ? reader.ReadUInt16() : reader.ReadUInt16BigEndian()
-                    : isLittleEndian ? reader.ReadInt32() : reader.ReadInt32BigEndian();
-            }
-            else if (tag == 257) // ImageHeight tag
-            {
-                height = numValues <= ushort.MaxValue
-                    ? isLittleEndian ? reader.ReadUInt16() : reader.ReadUInt16BigEndian()
-                    : isLittleEndian ? reader.ReadInt32() : reader.ReadInt32BigEndian();
-            }
+       for (int i = 0; i < entryCount; i++)
+       {
+           var tag = isLittleEndian ? reader.ReadUInt16() : reader.ReadUInt16BigEndian();
+           reader.BaseStream.Seek(2, SeekOrigin.Current); // Skip the type, we assume short/int for width/height
+           var numValues = isLittleEndian ? reader.ReadUInt32() : reader.ReadUInt32BigEndian();
+           var valueOrOffset = isLittleEndian ? reader.ReadUInt32() : reader.ReadUInt32BigEndian();
 
-            if (width != 0 && height != 0)
-                return (width, height);
+           if (tag == 256) // ImageWidth tag
+           {
+               width = (int)valueOrOffset;
+           }
+           else if (tag == 257) // ImageHeight tag
+           {
+               height = (int)valueOrOffset;
+           }
 
-            reader.BaseStream.Seek(4, SeekOrigin.Current); // Move to the next tag
-        }
+           if (width != 0 && height != 0)
+               return (width, height);
+       }
 
-        return (width, height); // Returns width and height even if one of them is zero
-    }
+       return (width, height); // Returns width and height even if one of them is zero
+   }
 
     private static (int width, int height)? GetJpegSize(BinaryReader binaryReader)
     {
