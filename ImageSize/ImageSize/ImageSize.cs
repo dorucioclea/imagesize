@@ -62,19 +62,14 @@ public static class ImageSize
        // Read byte order marks
        var byteOrderBytes = reader.ReadBytes(2);
 
-       bool isLittleEndian;
-       if (byteOrderBytes[0] == 0x49 && byteOrderBytes[1] == 0x49) // II for Intel order (Little-Endian)
+       var isLittleEndian = byteOrderBytes[0] switch
        {
-           isLittleEndian = true;
-       }
-       else if (byteOrderBytes[0] == 0x4D && byteOrderBytes[1] == 0x4D) // MM for Motorola order (Big-Endian)
-       {
-           isLittleEndian = false;
-       }
-       else
-       {
-           throw new ImageFormatException("Not a valid TIFF file"); // Not a valid TIFF file
-       }
+           // II for Intel order (Little-Endian)
+           0x49 when byteOrderBytes[1] == 0x49 => true,
+           // MM for Motorola order (Big-Endian)
+           0x4D when byteOrderBytes[1] == 0x4D => false,
+           _ => throw new ImageFormatException("Not a valid TIFF file")
+       };
 
        // Read the TIFF magic number (should be 42)
        var magicNumber = isLittleEndian ? reader.ReadUInt16() : reader.ReadUInt16BigEndian();
