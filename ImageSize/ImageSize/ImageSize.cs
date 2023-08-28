@@ -41,6 +41,24 @@ public class ImageSize
                     int height = binaryReader.ReadInt32BigEndian();
                     return (width, height);
                 }
+                
+                // Check for GIF magic numbers
+                else if (header[0] == 0x47 && header[1] == 0x49 && header[2] == 0x46)
+                {
+                    fileStream.Seek(6, SeekOrigin.Begin);
+                    int width = binaryReader.ReadInt16LittleEndian();
+                    int height = binaryReader.ReadInt16LittleEndian();
+                    return (width, height);
+                }
+
+                // Check for BMP magic numbers
+                else if (header[0] == 0x42 && header[1] == 0x4D)
+                {
+                    fileStream.Seek(18, SeekOrigin.Begin);
+                    int width = binaryReader.ReadInt32LittleEndian();
+                    int height = binaryReader.ReadInt32LittleEndian();
+                    return (width, height);
+                }
             }
         }
 
