@@ -17,7 +17,8 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         global-json-file: 'global.json'
-      
+        source-url: https://nuget.pkg.github.com/dorucioclea/index.json
+
     - name: Restore dependencies
       run: dotnet restore
       working-directory: ImageSize
@@ -35,8 +36,7 @@ jobs:
       run: echo "::set-output name=version::$(echo ${GITHUB_REF#refs/tags/v})"
 
     - name: Pack
-      run: dotnet pack -c Release -o out /p:PackageVersion=${{ steps.get_version.outputs.version }}
-      working-directory: ImageSize
+      run: dotnet pack -c Release "./ImageSize/" -o out -p:PackageVersion=${{ steps.get_version.outputs.version }}
 
     - name: Push to NuGet
       run: dotnet nuget push ImageSize/ImageSize/bin/Release/*.nupkg -k ${GITHUB_TOKEN} -s https://nuget.pkg.github.com/dorucioclea/index.json --skip-duplicate --no-symbols true
