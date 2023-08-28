@@ -30,13 +30,16 @@ jobs:
       run: dotnet test --no-build --verbosity normal
       working-directory: ImageSize
 
+    - name: Extract version
+      id: get_version
+      run: echo "::set-output name=version::$(echo ${GITHUB_REF#refs/tags/v})"
+
     - name: Pack
-      run: dotnet pack --no-build --configuration Release /p:PackageVersion=${{ github.ref }} -o out
+      run: dotnet pack -c Release -o out /p:PackageVersion=${{ steps.get_version.outputs.version }}
       working-directory: ImageSize
 
     - name: Push to NuGet
-      # run: dotnet nuget push out/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
-      # working-directory: ImageSize
-      run: dotnet nuget push ImageSize/ImageSize/bin/Release/*.nupkg -k ${GITHUB_TOKEN} -s https://nuget.pkg.github.com/dorucioclea/index.json --skip-duplicate --no-symbols true
+      run: dotnet nuget push ImageSize/bin/Release/*.nupkg -k ${GITHUB_TOKEN} -s https://nuget.pkg.github.com/dorucioclea/index.json --skip-duplicate --no-symbols true
+      working-directory: ImageSize
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
