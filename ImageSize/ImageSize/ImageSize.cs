@@ -47,14 +47,6 @@ public static class ImageSize
         else if (header.Take(2).SequenceEqual(new byte[] {0x49, 0x49}) ||
                  header.Take(2).SequenceEqual(new byte[] {0x4D, 0x4D})) // "II" or "MM"
         {
-            // bool isLittleEndian = header[0] == 0x49;
-            // binaryReader.BaseStream.Seek(4, SeekOrigin.Current);
-            // int offset = isLittleEndian ? binaryReader.ReadInt32LittleEndian() : binaryReader.ReadInt32BigEndian();
-            // binaryReader.BaseStream.Seek(offset + 2, SeekOrigin.Begin);
-            // int width = isLittleEndian ? binaryReader.ReadInt16LittleEndian() : binaryReader.ReadInt16BigEndian();
-            // int height = isLittleEndian ? binaryReader.ReadInt16LittleEndian() : binaryReader.ReadInt16BigEndian();
-            // return (width, height);
-
             return GetTiffSize(binaryReader);
         }
 
