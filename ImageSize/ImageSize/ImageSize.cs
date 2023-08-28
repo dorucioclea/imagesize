@@ -101,7 +101,16 @@ public static class ImageSize
        {
            var tag = isLittleEndian ? reader.ReadUInt16() : reader.ReadUInt16BigEndian();
            reader.BaseStream.Seek(2, SeekOrigin.Current); // Skip the type, we assume short/int for width/height
-           var numValues = isLittleEndian ? reader.ReadUInt32() : reader.ReadUInt32BigEndian();
+
+           if (isLittleEndian)
+           {
+               reader.ReadUInt32();
+           }
+           else
+           {
+               reader.ReadUInt32BigEndian();
+           }
+           
            var valueOrOffset = isLittleEndian ? reader.ReadUInt32() : reader.ReadUInt32BigEndian();
 
            switch (tag)
