@@ -17,7 +17,8 @@ public static class ImageSize
         }
 
         // Check for PNG magic numbers
-        else if (header[0] == 0x89 && header[1] == 0x50 && header[2] == 0x4E && header[3] == 0x47)
+
+        if (header[0] == 0x89 && header[1] == 0x50 && header[2] == 0x4E && header[3] == 0x47)
         {
             binaryReader.BaseStream.Seek(16, SeekOrigin.Begin);
             var width = binaryReader.ReadInt32BigEndian();
@@ -26,7 +27,7 @@ public static class ImageSize
         }
 
         // Check for GIF magic numbers
-        else if (header[0] == 0x47 && header[1] == 0x49 && header[2] == 0x46)
+        if (header[0] == 0x47 && header[1] == 0x49 && header[2] == 0x46)
         {
             binaryReader.BaseStream.Seek(6, SeekOrigin.Begin);
             int width = binaryReader.ReadInt16LittleEndian();
@@ -35,7 +36,7 @@ public static class ImageSize
         }
 
         // Check for BMP magic numbers
-        else if (header[0] == 0x42 && header[1] == 0x4D)
+        if (header[0] == 0x42 && header[1] == 0x4D)
         {
             binaryReader.BaseStream.Seek(18, SeekOrigin.Begin);
             var width = binaryReader.ReadInt32LittleEndian();
@@ -44,9 +45,10 @@ public static class ImageSize
         }
 
         // Check for TIFF magic numbers
-        else if (header.Take(2).SequenceEqual(new byte[] {0x49, 0x49}) ||
-                 header.Take(2).SequenceEqual(new byte[] {0x4D, 0x4D})) // "II" or "MM"
+        if (header.Take(2).SequenceEqual(new byte[] {0x49, 0x49}) ||
+            header.Take(2).SequenceEqual(new byte[] {0x4D, 0x4D})) // "II" or "MM"
         {
+            binaryReader.BaseStream.Seek(0, SeekOrigin.Begin);
             return GetTiffSize(binaryReader);
         }
 
@@ -137,11 +139,9 @@ public static class ImageSize
                 int width = binaryReader.ReadInt16BigEndian();
                 return (width, height);
             }
-            else
-            {
-                int segmentLength = binaryReader.ReadInt16BigEndian();
-                binaryReader.BaseStream.Seek(segmentLength - 2, SeekOrigin.Current);
-            }
+
+            int segmentLength = binaryReader.ReadInt16BigEndian();
+            binaryReader.BaseStream.Seek(segmentLength - 2, SeekOrigin.Current);
         }
 
         return null;
