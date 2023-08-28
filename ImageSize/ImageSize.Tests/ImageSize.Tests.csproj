@@ -19,4 +19,10 @@
       <ProjectReference Include="..\ImageSize\ImageSize.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="200x300.jpg">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
