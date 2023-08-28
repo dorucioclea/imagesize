@@ -27,12 +27,12 @@ Download the latest release and add the .dll file to your C# project.
 ## Usage
 
 ```csharp
-using ImageDimensionDetector;
+using ImageSize;
 
 ...
 
 Stream imageStream = File.OpenRead("path_to_your_image_file");
-var dimensions = ImageDimensionDetector.GetImageSize(imageStream);
+var dimensions = ImageSize.GetImageSize(imageStream);
 
 if(dimensions.HasValue)
 {
