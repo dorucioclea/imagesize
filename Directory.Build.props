@@ -1,0 +1,19 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <AssemblyTitle>$(ProjectName)</AssemblyTitle>
+    <AssemblyName>$(ProjectName)</AssemblyName>
+    <PackageId>$(ProjectName)</PackageId>
+    <Company>HomeInc</Company>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>11.0</LangVersion>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NoWarn>NU1701,CS8632,NU1507</NoWarn>
+	  <WarningsAsErrors>NU1605,CS0108,CS4014</WarningsAsErrors>
+  </PropertyGroup>
+</Project>
