@@ -17,13 +17,13 @@ public static class Extensions
     public static int ReadInt32LittleEndian(this BinaryReader reader)
     {
         var bytes = reader.ReadBytes(4);
-        return (bytes[0]) | (bytes[1] << 8) | (bytes[2] << 16) | (bytes[3] << 24);
+        return bytes[0] | (bytes[1] << 8) | (bytes[2] << 16) | (bytes[3] << 24);
     }
     
     public static short ReadInt16LittleEndian(this BinaryReader reader)
     {
         var bytes = reader.ReadBytes(2);
-        return (short)((bytes[0]) | (bytes[1] << 8));
+        return (short)(bytes[0] | (bytes[1] << 8));
     }
     
     public static ushort ReadUInt16BigEndian(this BinaryReader reader)

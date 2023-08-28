@@ -101,14 +101,14 @@ public static class ImageSize
             if (tag == 256) // ImageWidth tag
             {
                 width = numValues <= ushort.MaxValue
-                    ? (isLittleEndian ? reader.ReadUInt16() : reader.ReadUInt16BigEndian())
-                    : (isLittleEndian ? reader.ReadInt32() : reader.ReadInt32BigEndian());
+                    ? isLittleEndian ? reader.ReadUInt16() : reader.ReadUInt16BigEndian()
+                    : isLittleEndian ? reader.ReadInt32() : reader.ReadInt32BigEndian();
             }
             else if (tag == 257) // ImageHeight tag
             {
                 height = numValues <= ushort.MaxValue
-                    ? (isLittleEndian ? reader.ReadUInt16() : reader.ReadUInt16BigEndian())
-                    : (isLittleEndian ? reader.ReadInt32() : reader.ReadInt32BigEndian());
+                    ? isLittleEndian ? reader.ReadUInt16() : reader.ReadUInt16BigEndian()
+                    : isLittleEndian ? reader.ReadInt32() : reader.ReadInt32BigEndian();
             }
 
             if (width != 0 && height != 0)
