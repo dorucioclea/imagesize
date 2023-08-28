@@ -77,7 +77,7 @@ public static class ImageSize
        }
        else
        {
-           return null; // Not a valid TIFF file
+           throw new ImageFormatException("Not a valid TIFF file"); // Not a valid TIFF file
        }
 
        // Read the TIFF magic number (should be 42)
