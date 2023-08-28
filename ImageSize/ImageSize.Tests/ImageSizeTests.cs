@@ -17,4 +17,52 @@ public class ImageSizeTests
         Assert.Equal(200, size.Value.width);
         Assert.Equal(300, size.Value.height);
     }
+    
+    [Fact]
+    public void TestBMPSize()
+    {
+        var path = Path.Combine(Directory.GetCurrentDirectory(), "200x300.bmp");
+        using var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
+        var size = ImageSize.GetImageSize(fileStream);
+        
+        Assert.NotNull(size);
+        Assert.Equal(200, size.Value.width);
+        Assert.Equal(300, size.Value.height);
+    }
+    
+    [Fact]
+    public void TestPNGSize()
+    {
+        var path = Path.Combine(Directory.GetCurrentDirectory(), "200x300.png");
+        using var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
+        var size = ImageSize.GetImageSize(fileStream);
+        
+        Assert.NotNull(size);
+        Assert.Equal(200, size.Value.width);
+        Assert.Equal(300, size.Value.height);
+    }
+    
+    [Fact]
+    public void TestGIFSize()
+    {
+        var path = Path.Combine(Directory.GetCurrentDirectory(), "200x300.gif");
+        using var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
+        var size = ImageSize.GetImageSize(fileStream);
+        
+        Assert.NotNull(size);
+        Assert.Equal(200, size.Value.width);
+        Assert.Equal(300, size.Value.height);
+    }
+    
+    [Fact]
+    public void TestTIFFSize()
+    {
+        var path = Path.Combine(Directory.GetCurrentDirectory(), "200x300.tif");
+        using var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
+        var size = ImageSize.GetImageSize(fileStream);
+        
+        Assert.NotNull(size);
+        Assert.Equal(200, size.Value.width);
+        Assert.Equal(300, size.Value.height);
+    }
 }
